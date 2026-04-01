@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medexo – Global Health Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f5f2ee;
+      --surface: #ffffff;
+      --surface2: #edeae5;
+      --text: #1a1612;
+      --text-muted: #7a756e;
+      --accent: #c0392b;
+      --accent2: #e74c3c;
+      --accent-light: #fdecea;
+      --green: #27ae60;
+      --green-light: #eafaf1;
+      --blue: #2980b9;
+      --blue-light: #eaf4fb;
+      --gold: #d4a017;
+      --gold-light: #fdf6e3;
+      --border: #ddd8d0;
+      --shadow: 0 4px 24px rgba(0,0,0,0.07);
+      --shadow-hover: 0 8px 40px rgba(0,0,0,0.13);
+      --radius: 16px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #111110;
+      --surface: #1c1b19;
+      --surface2: #252320;
+      --text: #f0ede8;
+      --text-muted: #8a857e;
+      --accent: #e74c3c;
+      --accent-light: #2a1512;
+      --green-light: #0f2318;
+      --blue-light: #0d1e2a;
+      --gold-light: #1f1800;
+      --border: #2e2c28;
+      --shadow: 0 4px 24px rgba(0,0,0,0.3);
+      --shadow-hover: 0 8px 40px rgba(0,0,0,0.5);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+    }
+
+    .logo-text {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text span { color: var(--accent); }
+
+    nav { display: flex; align-items: center; gap: 8px; }
+
+    .theme-toggle {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      display: grid;
+      place-items: center;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .theme-toggle:hover { background: var(--border); transform: rotate(20deg); }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--accent) 0%, #922b21 100%);
+      color: #fff;
+      padding: 64px 32px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 400;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      opacity: 0.85;
+      max-width: 520px;
+      margin: 0 auto 32px;
+      position: relative;
+      font-weight: 300;
+    }
+
+    .search-wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 16px 52px 16px 20px;
+      border-radius: 50px;
+      border: none;
+      font-size: 1rem;
+      font-family: 'DM Sans', sans-serif;
+      background: rgba(255,255,255,0.95);
+      color: #1a1612;
+      outline: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      transition: box-shadow 0.2s;
+    }
+
+    .search-wrap input:focus { box-shadow: 0 4px 32px rgba(0,0,0,0.35); }
+    .search-wrap input::placeholder { color: #aaa; }
+
+    .search-icon {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: var(--accent);
+    }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      display: flex;
+      gap: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .stats-strip::-webkit-scrollbar { display: none; }
+
+    .stat-item {
+      flex: 1;
+      min-width: 160px;
+      padding: 20px 24px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .stat-item:last-child { border-right: none; }
+
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem;
+      color: var(--text);
+    }
+
+    .stat-value.red { color: var(--accent); }
+    .stat-value.green { color: var(--green); }
+    .stat-value.blue { color: var(--blue); }
+
+    /* ── CONTROLS ── */
+    .controls {
+      padding: 24px 32px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .controls label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .controls select {
+      padding: 9px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .controls select:focus { border-color: var(--accent); }
+
+    .count-badge {
+      margin-left: auto;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    /* ── GRID ── */
+    .grid-container {
+      padding: 12px 32px 48px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      transition: transform 0.22s, box-shadow 0.22s;
+      animation: fadeUp 0.4s ease both;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .flag {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .country-info h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .continent-tag {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .card-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-box {
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .stat-box.cases { background: var(--accent-light); }
+    .stat-box.deaths { background: var(--gold-light); }
+    .stat-box.recovered { background: var(--green-light); }
+    .stat-box.active { background: var(--blue-light); }
+
+    .stat-box .val {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      color: var(--text);
+    }
+
+    .stat-box.cases .val { color: var(--accent); }
+    .stat-box.deaths .val { color: var(--gold); }
+    .stat-box.recovered .val { color: var(--green); }
+    .stat-box.active .val { color: var(--blue); }
+
+    .stat-box .lbl {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .card-footer {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .updated {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .fav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      transition: transform 0.2s;
+      padding: 0;
+    }
+
+    .fav-btn:hover { transform: scale(1.3); }
+
+    /* ── LOADING ── */
+    .loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 32px;
+      gap: 16px;
+      grid-column: 1 / -1;
+    }
+
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .loader p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── ERROR ── */
+    .error-msg {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 32px;
+      color: var(--accent);
+      font-size: 1rem;
+    }
+
+    /* ── NO RESULTS ── */
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 32px;
+      color: var(--text-muted);
+    }
+
+    .no-results span { font-size: 3rem; display: block; margin-bottom: 12px; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      header { padding: 0 16px; }
+      .hero { padding: 44px 16px 36px; }
+      .controls { padding: 16px 16px 8px; }
+      .grid-container { padding: 8px 16px 40px; grid-template-columns: 1fr; }
+      .stats-strip { display: grid; grid-template-columns: 1fr 1fr; }
+      .stat-item { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a class="logo" href="#">
+      <div class="logo-icon">🏥</div>
+      <span class="logo-text">Med<span>exo</span></span>
+    </a>
+    <nav>
+      <button class="theme-toggle" id="themeBtn" title="Toggle dark mode">🌙</button>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Global Health Dashboard</h1>
+    <p>Live disease statistics from around the world, powered by real-time data.</p>
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="Search country…" autocomplete="off" />
+      <span class="search-icon">🔍</span>
+    </div>
+  </section>
+
+  <!-- GLOBAL STATS STRIP -->
+  <div class="stats-strip" id="statsStrip">
+    <div class="stat-item" style="animation-delay:0.05s">
+      <div class="stat-label">Total Cases</div>
+      <div class="stat-value red" id="globalCases">—</div>
+    </div>
+    <div class="stat-item" style="animation-delay:0.1s">
+      <div class="stat-label">Total Deaths</div>
+      <div class="stat-value" style="color:var(--gold)" id="globalDeaths">—</div>
+    </div>
+    <div class="stat-item" style="animation-delay:0.15s">
+      <div class="stat-label">Recovered</div>
+      <div class="stat-value green" id="globalRecovered">—</div>
+    </div>
+    <div class="stat-item" style="animation-delay:0.2s">
+      <div class="stat-label">Active Cases</div>
+      <div class="stat-value blue" id="globalActive">—</div>
+    </div>
+    <div class="stat-item" style="animation-delay:0.25s">
+      <div class="stat-label">Countries</div>
+      <div class="stat-value" id="globalCountries">—</div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <label>Sort by</label>
+    <select id="sortSelect">
+      <option value="cases">Total Cases</option>
+      <option value="deaths">Deaths</option>
+      <option value="recovered">Recovered</option>
+      <option value="active">Active</option>
+      <option value="country">Country (A–Z)</option>
+    </select>
+    <label>Continent</label>
+    <select id="continentSelect">
+      <option value="all">All Continents</option>
+      <option value="Asia">Asia</option>
+      <option value="Europe">Europe</option>
+      <option value="North America">North America</option>
+      <option value="South America">South America</option>
+      <option value="Africa">Africa</option>
+      <option value="Australia/Oceania">Oceania</option>
+    </select>
+    <span class="count-badge" id="countBadge">Loading…</span>
+  </div>
+
+  <!-- GRID -->
+  <div class="grid-container" id="grid">
+    <div class="loader">
+      <div class="spinner"></div>
+      <p>Fetching live health data…</p>
+    </div>
+  </div>
+
+  <script>
+    // ── STATE ──────────────────────────────────────────────
+    let allCountries = [];
+    let favorites = JSON.parse(localStorage.getItem('medexo_favs') || '[]');
+
+    // ── THEME ──────────────────────────────────────────────
+    const themeBtn = document.getElementById('themeBtn');
+    const savedTheme = localStorage.getItem('medexo_theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeBtn.textContent = '☀️';
+    }
+
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      themeBtn.textContent = isDark ? '🌙' : '☀️';
+      localStorage.setItem('medexo_theme', isDark ? 'light' : 'dark');
+    });
+
+    // ── HELPERS ────────────────────────────────────────────
+    const fmt = n => n == null ? 'N/A' : Number(n).toLocaleString();
+
+    const timeAgo = ts => {
+      const diff = Date.now() - ts;
+      const h = Math.floor(diff / 3600000);
+      if (h < 1) return 'Just now';
+      if (h < 24) return `${h}h ago`;
+      return `${Math.floor(h / 24)}d ago`;
+    };
+
+    const countryFlag = iso2 => {
+      if (!iso2) return '🌍';
+      const chars = [...iso2.toUpperCase()].map(c => String.fromCodePoint(0x1F1E0 + c.charCodeAt(0) - 65));
+      return chars.join('');
+    };
+
+    // ── FETCH GLOBAL STATS ─────────────────────────────────
+    async function fetchGlobalStats() {
+      try {
+        const res = await fetch('https://disease.sh/v3/covid-19/all');
+        if (!res.ok) throw new Error('Failed');
+        const data = await res.json();
+        document.getElementById('globalCases').textContent = fmt(data.cases);
+        document.getElementById('globalDeaths').textContent = fmt(data.deaths);
+        document.getElementById('globalRecovered').textContent = fmt(data.recovered);
+        document.getElementById('globalActive').textContent = fmt(data.active);
+        document.getElementById('globalCountries').textContent = fmt(data.affectedCountries);
+      } catch (e) {
+        console.error('Global stats error:', e);
+      }
+    }
+
+    // ── FETCH COUNTRIES ────────────────────────────────────
+    async function fetchCountries() {
+      try {
+        const res = await fetch('https://disease.sh/v3/covid-19/countries?sort=cases');
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        const data = await res.json();
+        allCountries = data;
+        renderCards(allCountries);
+      } catch (err) {
+        document.getElementById('grid').innerHTML =
+          `<div class="error-msg">⚠️ Could not load data. Please check your connection and refresh.</div>`;
+        console.error('Fetch error:', err);
+      }
+    }
+
+    // ── RENDER CARDS ───────────────────────────────────────
+    function renderCards(countries) {
+      const grid = document.getElementById('grid');
+      document.getElementById('countBadge').textContent = `${countries.length} countries`;
+
+      if (countries.length === 0) {
+        grid.innerHTML = `<div class="no-results"><span>🔎</span>No countries match your search.</div>`;
+        return;
+      }
+
+      grid.innerHTML = countries.map((c, i) => {
+        const isFav = favorites.includes(c.country);
+        return `
+        <div class="card" style="animation-delay:${Math.min(i * 0.04, 0.6)}s" data-country="${c.country}">
+          <div class="card-header">
+            <div class="flag">${countryFlag(c.countryInfo?.iso2)}</div>
+            <div class="country-info">
+              <h3>${c.country}</h3>
+              <div class="continent-tag">${c.continent || 'Unknown'}</div>
+            </div>
+          </div>
+          <div class="card-stats">
+            <div class="stat-box cases">
+              <div class="val">${fmt(c.cases)}</div>
+              <div class="lbl">Total Cases</div>
+            </div>
+            <div class="stat-box deaths">
+              <div class="val">${fmt(c.deaths)}</div>
+              <div class="lbl">Deaths</div>
+            </div>
+            <div class="stat-box recovered">
+              <div class="val">${fmt(c.recovered)}</div>
+              <div class="lbl">Recovered</div>
+            </div>
+            <div class="stat-box active">
+              <div class="val">${fmt(c.active)}</div>
+              <div class="lbl">Active</div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <span class="updated">Updated ${timeAgo(c.updated)}</span>
+            <button class="fav-btn" data-name="${c.country}" title="Favourite">${isFav ? '❤️' : '🤍'}</button>
+          </div>
+        </div>`;
+      }).join('');
+
+      // Fav button events
+      grid.querySelectorAll('.fav-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const name = btn.dataset.name;
+          if (favorites.includes(name)) {
+            favorites = favorites.filter(f => f !== name);
+            btn.textContent = '🤍';
+          } else {
+            favorites.push(name);
+            btn.textContent = '❤️';
+          }
+          localStorage.setItem('medexo_favs', JSON.stringify(favorites));
+        });
+      });
+    }
+
+    // ── FILTER + SORT (Array HOFs) ─────────────────────────
+    function applyFilters() {
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      const sortBy = document.getElementById('sortSelect').value;
+      const continent = document.getElementById('continentSelect').value;
+
+      let result = allCountries
+        // 1. Filter by search
+        .filter(c => c.country.toLowerCase().includes(query))
+        // 2. Filter by continent
+        .filter(c => continent === 'all' || c.continent === continent)
+        // 3. Sort
+        .sort((a, b) => {
+          if (sortBy === 'country') return a.country.localeCompare(b.country);
+          return (b[sortBy] ?? 0) - (a[sortBy] ?? 0);
+        });
+
+      renderCards(result);
+    }
+
+    // ── DEBOUNCE (Bonus Feature) ───────────────────────────
+    function debounce(fn, delay) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+      };
+    }
+
+    // ── EVENTS ────────────────────────────────────────────
+    document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
+    document.getElementById('sortSelect').addEventListener('change', applyFilters);
+    document.getElementById('continentSelect').addEventListener('change', applyFilters);
+
+    // ── INIT ──────────────────────────────────────────────
+    fetchGlobalStats();
+    fetchCountries();
+  </script>
+</body>
+</html>
