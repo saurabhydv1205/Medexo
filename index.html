@@ -6,6 +6,7 @@
   <title>Medexo – Global Health Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
+    /* ─── CSS VARIABLES ─────────────────────────────────── */
     :root {
       --bg: #f5f2ee;
       --surface: #ffffff;
@@ -43,6 +44,7 @@
       --shadow-hover: 0 8px 40px rgba(0,0,0,0.5);
     }
 
+    /* ─── RESET ─────────────────────────────────────────── */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -53,7 +55,7 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* ── HEADER ── */
+    /* ─── HEADER ────────────────────────────────────────── */
     header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
@@ -96,6 +98,7 @@
 
     nav { display: flex; align-items: center; gap: 8px; }
 
+    /* ─── THEME TOGGLE ──────────────────────────────────── */
     .theme-toggle {
       background: var(--surface2);
       border: 1px solid var(--border);
@@ -111,7 +114,31 @@
     }
     .theme-toggle:hover { background: var(--border); transform: rotate(20deg); }
 
-    /* ── HERO ── */
+    /* Favs-only toggle */
+    .favs-toggle {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .favs-toggle.active {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .favs-toggle:hover { background: var(--border); }
+
+    /* ─── HERO ──────────────────────────────────────────── */
     .hero {
       background: linear-gradient(135deg, var(--accent) 0%, #922b21 100%);
       color: #fff;
@@ -145,6 +172,7 @@
       font-weight: 300;
     }
 
+    /* ─── SEARCH ────────────────────────────────────────── */
     .search-wrap {
       max-width: 520px;
       margin: 0 auto;
@@ -177,7 +205,25 @@
       color: var(--accent);
     }
 
-    /* ── STATS STRIP ── */
+    /* Clear button inside search */
+    .search-clear {
+      position: absolute;
+      right: 48px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      color: #aaa;
+      display: none;
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .search-clear:hover { color: var(--accent); }
+    .search-clear.visible { display: block; }
+
+    /* ─── STATS STRIP ───────────────────────────────────── */
     .stats-strip {
       display: flex;
       gap: 0;
@@ -219,37 +265,70 @@
     .stat-value.green { color: var(--green); }
     .stat-value.blue { color: var(--blue); }
 
-    /* ── CONTROLS ── */
+    /* ─── CONTROLS ──────────────────────────────────────── */
     .controls {
-      padding: 24px 32px 12px;
+      padding: 20px 32px 12px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .controls label {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 500;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      white-space: nowrap;
     }
 
     .controls select {
       padding: 9px 14px;
       border-radius: 10px;
       border: 1px solid var(--border);
-      background: var(--surface);
+      background: var(--surface2);
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       cursor: pointer;
       outline: none;
       transition: border-color 0.2s;
     }
 
     .controls select:focus { border-color: var(--accent); }
+
+    /* Sort order toggle button */
+    .sort-dir-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      display: grid;
+      place-items: center;
+      transition: background 0.2s, transform 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+    .sort-dir-btn:hover { background: var(--border); color: var(--text); }
+
+    .divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
 
     .count-badge {
       margin-left: auto;
@@ -261,29 +340,90 @@
       font-weight: 600;
     }
 
-    /* ── GRID ── */
+    /* ─── ACTIVE FILTER CHIPS ───────────────────────────── */
+    .filter-chips {
+      padding: 10px 32px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-height: 0;
+    }
+
+    .filter-chips:empty { display: none; }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid rgba(192,57,43,0.2);
+      padding: 4px 10px 4px 12px;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      animation: chipIn 0.2s ease;
+    }
+
+    .chip-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--accent);
+      font-size: 14px;
+      line-height: 1;
+      padding: 0;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .chip-close:hover { opacity: 1; }
+
+    @keyframes chipIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    /* ─── GRID ──────────────────────────────────────────── */
     .grid-container {
-      padding: 12px 32px 48px;
+      padding: 20px 32px 56px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
       gap: 20px;
     }
 
-    /* ── CARD ── */
+    /* ─── CARD ──────────────────────────────────────────── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 22px;
       box-shadow: var(--shadow);
-      transition: transform 0.22s, box-shadow 0.22s;
+      transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
       animation: fadeUp 0.4s ease both;
-      cursor: pointer;
+      position: relative;
+      overflow: hidden;
     }
 
     .card:hover {
       transform: translateY(-4px);
       box-shadow: var(--shadow-hover);
+      border-color: rgba(192,57,43,0.25);
+    }
+
+    /* Favourite glow ring */
+    .card.fav-active {
+      border-color: rgba(192,57,43,0.5);
+      box-shadow: var(--shadow), 0 0 0 2px rgba(192,57,43,0.12);
+    }
+
+    /* Favourite ribbon */
+    .card.fav-active::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 0; height: 0;
+      border-top: 32px solid var(--accent);
+      border-left: 32px solid transparent;
     }
 
     .card-header {
@@ -293,10 +433,7 @@
       margin-bottom: 16px;
     }
 
-    .flag {
-      font-size: 2rem;
-      line-height: 1;
-    }
+    .flag { font-size: 2rem; line-height: 1; }
 
     .country-info h3 {
       font-family: 'DM Serif Display', serif;
@@ -314,6 +451,18 @@
       margin-top: 2px;
     }
 
+    /* Mortality rate badge */
+    .mortality-badge {
+      margin-left: auto;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 50px;
+      background: var(--gold-light);
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
     .card-stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -324,12 +473,15 @@
       padding: 10px 12px;
       border-radius: 10px;
       text-align: center;
+      transition: transform 0.15s;
     }
 
-    .stat-box.cases { background: var(--accent-light); }
-    .stat-box.deaths { background: var(--gold-light); }
-    .stat-box.recovered { background: var(--green-light); }
-    .stat-box.active { background: var(--blue-light); }
+    .stat-box:hover { transform: scale(1.03); }
+
+    .stat-box.cases     { background: var(--accent-light); }
+    .stat-box.deaths    { background: var(--gold-light);   }
+    .stat-box.recovered { background: var(--green-light);  }
+    .stat-box.active    { background: var(--blue-light);   }
 
     .stat-box .val {
       font-family: 'DM Serif Display', serif;
@@ -337,10 +489,10 @@
       color: var(--text);
     }
 
-    .stat-box.cases .val { color: var(--accent); }
-    .stat-box.deaths .val { color: var(--gold); }
-    .stat-box.recovered .val { color: var(--green); }
-    .stat-box.active .val { color: var(--blue); }
+    .stat-box.cases     .val { color: var(--accent); }
+    .stat-box.deaths    .val { color: var(--gold);   }
+    .stat-box.recovered .val { color: var(--green);  }
+    .stat-box.active    .val { color: var(--blue);   }
 
     .stat-box .lbl {
       font-size: 0.65rem;
@@ -351,10 +503,39 @@
       font-weight: 500;
     }
 
-    .card-footer {
+    /* ─── PROGRESS BAR (recovery rate) ─────────────────── */
+    .recovery-bar-wrap {
       margin-top: 14px;
       padding-top: 12px;
       border-top: 1px solid var(--border);
+    }
+
+    .recovery-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .recovery-track {
+      height: 5px;
+      background: var(--surface2);
+      border-radius: 50px;
+      overflow: hidden;
+    }
+
+    .recovery-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 50px;
+      transition: width 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* ─── CARD FOOTER ───────────────────────────────────── */
+    .card-footer {
+      margin-top: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -365,18 +546,85 @@
       color: var(--text-muted);
     }
 
-    .fav-btn {
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ─── ICON BUTTONS ──────────────────────────────────── */
+    .icon-btn {
       background: none;
       border: none;
       cursor: pointer;
       font-size: 18px;
-      transition: transform 0.2s;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      transition: transform 0.2s, background 0.15s;
       padding: 0;
     }
 
-    .fav-btn:hover { transform: scale(1.3); }
+    .icon-btn:hover { background: var(--surface2); transform: scale(1.15); }
+    .icon-btn:active { transform: scale(0.95); }
 
-    /* ── LOADING ── */
+    /* Like button pulse */
+    .icon-btn.liked {
+      animation: likePulse 0.35s ease;
+    }
+
+    @keyframes likePulse {
+      0%   { transform: scale(1);   }
+      40%  { transform: scale(1.4); }
+      70%  { transform: scale(0.9); }
+      100% { transform: scale(1);   }
+    }
+
+    /* ─── EXPAND DETAIL ─────────────────────────────────── */
+    .card-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s;
+      opacity: 0;
+    }
+
+    .card-detail.open {
+      max-height: 180px;
+      opacity: 1;
+    }
+
+    .detail-inner {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .detail-row {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .detail-row .dk {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .detail-row .dv {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    /* ─── LOADER ────────────────────────────────────────── */
     .loader {
       display: flex;
       flex-direction: column;
@@ -396,12 +644,9 @@
       animation: spin 0.8s linear infinite;
     }
 
-    .loader p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
+    .loader p { color: var(--text-muted); font-size: 0.9rem; }
 
-    /* ── ERROR ── */
+    /* ─── EMPTY STATES ──────────────────────────────────── */
     .error-msg {
       grid-column: 1 / -1;
       text-align: center;
@@ -410,7 +655,6 @@
       font-size: 1rem;
     }
 
-    /* ── NO RESULTS ── */
     .no-results {
       grid-column: 1 / -1;
       text-align: center;
@@ -420,98 +664,166 @@
 
     .no-results span { font-size: 3rem; display: block; margin-bottom: 12px; }
 
-    /* ── ANIMATIONS ── */
+    .no-results h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem;
+      color: var(--text);
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .no-results p { font-size: 0.9rem; }
+
+    /* ─── TOAST ─────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 9999;
+      white-space: nowrap;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ─── ANIMATIONS ────────────────────────────────────── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 600px) {
+    /* ─── RESPONSIVE ────────────────────────────────────── */
+    @media (max-width: 640px) {
       header { padding: 0 16px; }
       .hero { padding: 44px 16px 36px; }
-      .controls { padding: 16px 16px 8px; }
-      .grid-container { padding: 8px 16px 40px; grid-template-columns: 1fr; }
+      .controls { padding: 14px 16px 10px; }
+      .filter-chips { padding: 8px 16px; }
+      .grid-container { padding: 12px 16px 40px; grid-template-columns: 1fr; }
       .stats-strip { display: grid; grid-template-columns: 1fr 1fr; }
       .stat-item { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+      .count-badge { margin-left: 0; }
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
+  <!-- ─── HEADER ──────────────────────────────────────────────── -->
   <header>
     <a class="logo" href="#">
       <div class="logo-icon">🏥</div>
       <span class="logo-text">Med<span>exo</span></span>
     </a>
     <nav>
+      <!-- FEATURE 5: Favourites-only filter in nav -->
+      <button class="favs-toggle" id="favsOnlyBtn" title="Show favourites only">❤️ Favourites</button>
+      <!-- FEATURE 4 (dark mode): Theme toggle -->
       <button class="theme-toggle" id="themeBtn" title="Toggle dark mode">🌙</button>
     </nav>
   </header>
 
-  <!-- HERO -->
+  <!-- ─── HERO + SEARCH ───────────────────────────────────────── -->
   <section class="hero">
     <h1>Global Health Dashboard</h1>
     <p>Live disease statistics from around the world, powered by real-time data.</p>
+    <!-- FEATURE 1: Search -->
     <div class="search-wrap">
       <input type="text" id="searchInput" placeholder="Search country…" autocomplete="off" />
+      <button class="search-clear" id="searchClear" title="Clear">✕</button>
       <span class="search-icon">🔍</span>
     </div>
   </section>
 
-  <!-- GLOBAL STATS STRIP -->
-  <div class="stats-strip" id="statsStrip">
-    <div class="stat-item" style="animation-delay:0.05s">
+  <!-- ─── GLOBAL STATS STRIP ──────────────────────────────────── -->
+  <div class="stats-strip">
+    <div class="stat-item" style="animation-delay:.05s">
       <div class="stat-label">Total Cases</div>
       <div class="stat-value red" id="globalCases">—</div>
     </div>
-    <div class="stat-item" style="animation-delay:0.1s">
+    <div class="stat-item" style="animation-delay:.1s">
       <div class="stat-label">Total Deaths</div>
       <div class="stat-value" style="color:var(--gold)" id="globalDeaths">—</div>
     </div>
-    <div class="stat-item" style="animation-delay:0.15s">
+    <div class="stat-item" style="animation-delay:.15s">
       <div class="stat-label">Recovered</div>
       <div class="stat-value green" id="globalRecovered">—</div>
     </div>
-    <div class="stat-item" style="animation-delay:0.2s">
+    <div class="stat-item" style="animation-delay:.2s">
       <div class="stat-label">Active Cases</div>
       <div class="stat-value blue" id="globalActive">—</div>
     </div>
-    <div class="stat-item" style="animation-delay:0.25s">
+    <div class="stat-item" style="animation-delay:.25s">
       <div class="stat-label">Countries</div>
       <div class="stat-value" id="globalCountries">—</div>
     </div>
   </div>
 
-  <!-- CONTROLS -->
+  <!-- ─── CONTROLS ────────────────────────────────────────────── -->
   <div class="controls">
-    <label>Sort by</label>
-    <select id="sortSelect">
-      <option value="cases">Total Cases</option>
-      <option value="deaths">Deaths</option>
-      <option value="recovered">Recovered</option>
-      <option value="active">Active</option>
-      <option value="country">Country (A–Z)</option>
-    </select>
-    <label>Continent</label>
-    <select id="continentSelect">
-      <option value="all">All Continents</option>
-      <option value="Asia">Asia</option>
-      <option value="Europe">Europe</option>
-      <option value="North America">North America</option>
-      <option value="South America">South America</option>
-      <option value="Africa">Africa</option>
-      <option value="Australia/Oceania">Oceania</option>
-    </select>
+    <!-- FEATURE 3: Sort -->
+    <div class="controls-group">
+      <label>Sort by</label>
+      <select id="sortSelect">
+        <option value="cases">Total Cases</option>
+        <option value="deaths">Deaths</option>
+        <option value="recovered">Recovered</option>
+        <option value="active">Active</option>
+        <option value="country">Country (A–Z)</option>
+        <option value="mortality">Mortality Rate</option>
+      </select>
+      <!-- Sort direction toggle -->
+      <button class="sort-dir-btn" id="sortDirBtn" title="Toggle sort direction">↓</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FEATURE 2: Filter by continent -->
+    <div class="controls-group">
+      <label>Continent</label>
+      <select id="continentSelect">
+        <option value="all">All Continents</option>
+        <option value="Asia">Asia</option>
+        <option value="Europe">Europe</option>
+        <option value="North America">North America</option>
+        <option value="South America">South America</option>
+        <option value="Africa">Africa</option>
+        <option value="Australia/Oceania">Oceania</option>
+      </select>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FEATURE 2: Filter by case severity -->
+    <div class="controls-group">
+      <label>Cases</label>
+      <select id="severitySelect">
+        <option value="all">Any range</option>
+        <option value="high">High (1M+)</option>
+        <option value="medium">Medium (100K–1M)</option>
+        <option value="low">Low (&lt;100K)</option>
+      </select>
+    </div>
+
     <span class="count-badge" id="countBadge">Loading…</span>
   </div>
 
-  <!-- GRID -->
+  <!-- ─── ACTIVE FILTER CHIPS ──────────────────────────────────── -->
+  <div class="filter-chips" id="filterChips"></div>
+
+  <!-- ─── GRID ─────────────────────────────────────────────────── -->
   <div class="grid-container" id="grid">
     <div class="loader">
       <div class="spinner"></div>
@@ -519,14 +831,27 @@
     </div>
   </div>
 
-  <script>
-    // ── STATE ──────────────────────────────────────────────
-    let allCountries = [];
-    let favorites = JSON.parse(localStorage.getItem('medexo_favs') || '[]');
+  <!-- ─── TOAST ────────────────────────────────────────────────── -->
+  <div id="toast"></div>
 
-    // ── THEME ──────────────────────────────────────────────
-    const themeBtn = document.getElementById('themeBtn');
+  <!-- ─────────────────────────────────────────────────────────── -->
+  <script>
+    // ════════════════════════════════════════════════════════════
+    //  STATE
+    // ════════════════════════════════════════════════════════════
+    let allCountries  = [];
+    let favorites     = JSON.parse(localStorage.getItem('medexo_favs')   || '[]');
+    let likes         = JSON.parse(localStorage.getItem('medexo_likes')  || '[]');
+    let sortDir       = 'desc'; // 'asc' | 'desc'
+    let favsOnly      = false;
+    let expandedCards = new Set();
+
+    // ════════════════════════════════════════════════════════════
+    //  FEATURE 4 — DARK / LIGHT MODE TOGGLE
+    // ════════════════════════════════════════════════════════════
+    const themeBtn   = document.getElementById('themeBtn');
     const savedTheme = localStorage.getItem('medexo_theme') || 'light';
+
     if (savedTheme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
       themeBtn.textContent = '☀️';
@@ -534,157 +859,396 @@
 
     themeBtn.addEventListener('click', () => {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      const next   = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
       themeBtn.textContent = isDark ? '🌙' : '☀️';
-      localStorage.setItem('medexo_theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('medexo_theme', next);
+      showToast(isDark ? 'Light mode on ☀️' : 'Dark mode on 🌙');
     });
 
-    // ── HELPERS ────────────────────────────────────────────
-    const fmt = n => n == null ? 'N/A' : Number(n).toLocaleString();
+    // ════════════════════════════════════════════════════════════
+    //  HELPERS
+    // ════════════════════════════════════════════════════════════
+    const fmt = n => (n == null || isNaN(n)) ? 'N/A' : Number(n).toLocaleString();
+
+    const pct = (a, b) => (b && b > 0) ? ((a / b) * 100).toFixed(1) + '%' : 'N/A';
 
     const timeAgo = ts => {
-      const diff = Date.now() - ts;
-      const h = Math.floor(diff / 3600000);
-      if (h < 1) return 'Just now';
+      const h = Math.floor((Date.now() - ts) / 3_600_000);
+      if (h < 1)  return 'Just now';
       if (h < 24) return `${h}h ago`;
       return `${Math.floor(h / 24)}d ago`;
     };
 
     const countryFlag = iso2 => {
       if (!iso2) return '🌍';
-      const chars = [...iso2.toUpperCase()].map(c => String.fromCodePoint(0x1F1E0 + c.charCodeAt(0) - 65));
-      return chars.join('');
+      return [...iso2.toUpperCase()]
+        .map(c => String.fromCodePoint(0x1F1E0 + c.charCodeAt(0) - 65))
+        .join('');
     };
 
-    // ── FETCH GLOBAL STATS ─────────────────────────────────
-    async function fetchGlobalStats() {
-      try {
-        const res = await fetch('https://disease.sh/v3/covid-19/all');
-        if (!res.ok) throw new Error('Failed');
-        const data = await res.json();
-        document.getElementById('globalCases').textContent = fmt(data.cases);
-        document.getElementById('globalDeaths').textContent = fmt(data.deaths);
-        document.getElementById('globalRecovered').textContent = fmt(data.recovered);
-        document.getElementById('globalActive').textContent = fmt(data.active);
-        document.getElementById('globalCountries').textContent = fmt(data.affectedCountries);
-      } catch (e) {
-        console.error('Global stats error:', e);
-      }
+    // ════════════════════════════════════════════════════════════
+    //  TOAST
+    // ════════════════════════════════════════════════════════════
+    let toastTimer;
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
     }
 
-    // ── FETCH COUNTRIES ────────────────────────────────────
+    // ════════════════════════════════════════════════════════════
+    //  FETCH GLOBAL STATS
+    // ════════════════════════════════════════════════════════════
+    async function fetchGlobalStats() {
+      try {
+        const res  = await fetch('https://disease.sh/v3/covid-19/all');
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        document.getElementById('globalCases').textContent      = fmt(data.cases);
+        document.getElementById('globalDeaths').textContent     = fmt(data.deaths);
+        document.getElementById('globalRecovered').textContent  = fmt(data.recovered);
+        document.getElementById('globalActive').textContent     = fmt(data.active);
+        document.getElementById('globalCountries').textContent  = fmt(data.affectedCountries);
+      } catch { /* silent */ }
+    }
+
+    // ════════════════════════════════════════════════════════════
+    //  FETCH COUNTRIES
+    // ════════════════════════════════════════════════════════════
     async function fetchCountries() {
       try {
-        const res = await fetch('https://disease.sh/v3/covid-19/countries?sort=cases');
-        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-        const data = await res.json();
-        allCountries = data;
+        const res  = await fetch('https://disease.sh/v3/covid-19/countries?sort=cases');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        allCountries = await res.json();
         renderCards(allCountries);
       } catch (err) {
         document.getElementById('grid').innerHTML =
           `<div class="error-msg">⚠️ Could not load data. Please check your connection and refresh.</div>`;
-        console.error('Fetch error:', err);
       }
     }
 
-    // ── RENDER CARDS ───────────────────────────────────────
+    // ════════════════════════════════════════════════════════════
+    //  FEATURE 1 + 2 + 3 — SEARCH / FILTER / SORT  (Array HOFs)
+    // ════════════════════════════════════════════════════════════
+    function applyFilters() {
+      const query     = document.getElementById('searchInput').value.trim().toLowerCase();
+      const sortBy    = document.getElementById('sortSelect').value;
+      const continent = document.getElementById('continentSelect').value;
+      const severity  = document.getElementById('severitySelect').value;
+
+      const result = allCountries
+        // ── 1. SEARCH — Array.filter() ──────────────────────
+        .filter(c => c.country.toLowerCase().includes(query))
+
+        // ── 2a. FILTER by continent — Array.filter() ────────
+        .filter(c => continent === 'all' || c.continent === continent)
+
+        // ── 2b. FILTER by severity — Array.filter() ─────────
+        .filter(c => {
+          if (severity === 'all')    return true;
+          if (severity === 'high')   return c.cases >= 1_000_000;
+          if (severity === 'medium') return c.cases >= 100_000 && c.cases < 1_000_000;
+          if (severity === 'low')    return c.cases < 100_000;
+          return true;
+        })
+
+        // ── 2c. FILTER favourites only — Array.filter() ─────
+        .filter(c => !favsOnly || favorites.includes(c.country))
+
+        // ── 3. SORT — Array.sort() ───────────────────────────
+        .sort((a, b) => {
+          let cmp;
+          if (sortBy === 'country') {
+            cmp = a.country.localeCompare(b.country);
+          } else if (sortBy === 'mortality') {
+            const mA = a.cases ? a.deaths / a.cases : 0;
+            const mB = b.cases ? b.deaths / b.cases : 0;
+            cmp = mB - mA;
+          } else {
+            cmp = (b[sortBy] ?? 0) - (a[sortBy] ?? 0);
+          }
+          // Apply sort direction
+          return sortDir === 'asc' ? -cmp : cmp;
+        });
+
+      renderCards(result);
+      updateChips({ query, continent, severity });
+    }
+
+    // ════════════════════════════════════════════════════════════
+    //  ACTIVE FILTER CHIPS
+    // ════════════════════════════════════════════════════════════
+    function updateChips({ query, continent, severity }) {
+      const container = document.getElementById('filterChips');
+
+      // Build chips using Array.map() + Array.filter()
+      const chips = [
+        query    ? { label: `"${query}"`,       clear: () => { document.getElementById('searchInput').value = ''; applyFilters(); } } : null,
+        continent !== 'all' ? { label: continent, clear: () => { document.getElementById('continentSelect').value = 'all'; applyFilters(); } } : null,
+        severity !== 'all'  ? { label: severity + ' cases', clear: () => { document.getElementById('severitySelect').value = 'all'; applyFilters(); } } : null,
+        favsOnly ? { label: 'Favourites only', clear: () => { favsOnly = false; document.getElementById('favsOnlyBtn').classList.remove('active'); applyFilters(); } } : null,
+      ].filter(Boolean);
+
+      container.innerHTML = chips
+        .map((chip, i) =>
+          `<span class="chip">
+            ${chip.label}
+            <button class="chip-close" data-chip="${i}">✕</button>
+          </span>`)
+        .join('');
+
+      // Attach clear handlers
+      container.querySelectorAll('.chip-close').forEach(btn => {
+        btn.addEventListener('click', () => chips[+btn.dataset.chip].clear());
+      });
+    }
+
+    // ════════════════════════════════════════════════════════════
+    //  RENDER CARDS
+    // ════════════════════════════════════════════════════════════
     function renderCards(countries) {
       const grid = document.getElementById('grid');
-      document.getElementById('countBadge').textContent = `${countries.length} countries`;
+      document.getElementById('countBadge').textContent = `${countries.length} countr${countries.length === 1 ? 'y' : 'ies'}`;
 
-      if (countries.length === 0) {
-        grid.innerHTML = `<div class="no-results"><span>🔎</span>No countries match your search.</div>`;
+      if (!countries.length) {
+        grid.innerHTML = `
+          <div class="no-results">
+            <span>🔎</span>
+            <h3>No results found</h3>
+            <p>Try a different search term or adjust the filters above.</p>
+          </div>`;
         return;
       }
 
-      grid.innerHTML = countries.map((c, i) => {
-        const isFav = favorites.includes(c.country);
-        return `
-        <div class="card" style="animation-delay:${Math.min(i * 0.04, 0.6)}s" data-country="${c.country}">
-          <div class="card-header">
-            <div class="flag">${countryFlag(c.countryInfo?.iso2)}</div>
-            <div class="country-info">
-              <h3>${c.country}</h3>
-              <div class="continent-tag">${c.continent || 'Unknown'}</div>
-            </div>
-          </div>
-          <div class="card-stats">
-            <div class="stat-box cases">
-              <div class="val">${fmt(c.cases)}</div>
-              <div class="lbl">Total Cases</div>
-            </div>
-            <div class="stat-box deaths">
-              <div class="val">${fmt(c.deaths)}</div>
-              <div class="lbl">Deaths</div>
-            </div>
-            <div class="stat-box recovered">
-              <div class="val">${fmt(c.recovered)}</div>
-              <div class="lbl">Recovered</div>
-            </div>
-            <div class="stat-box active">
-              <div class="val">${fmt(c.active)}</div>
-              <div class="lbl">Active</div>
-            </div>
-          </div>
-          <div class="card-footer">
-            <span class="updated">Updated ${timeAgo(c.updated)}</span>
-            <button class="fav-btn" data-name="${c.country}" title="Favourite">${isFav ? '❤️' : '🤍'}</button>
-          </div>
-        </div>`;
-      }).join('');
+      // Build card HTML using Array.map()
+      grid.innerHTML = countries
+        .map((c, i) => {
+          const isFav      = favorites.includes(c.country);
+          const isLiked    = likes.includes(c.country);
+          const isExpanded = expandedCards.has(c.country);
+          const mortality  = c.cases ? ((c.deaths / c.cases) * 100).toFixed(2) + '%' : 'N/A';
+          const recovPct   = c.cases ? Math.min(Math.round((c.recovered / c.cases) * 100), 100) : 0;
 
-      // Fav button events
+          return `
+          <div class="card${isFav ? ' fav-active' : ''}"
+               style="animation-delay:${Math.min(i * 0.04, 0.6)}s"
+               data-country="${c.country}">
+
+            <div class="card-header">
+              <div class="flag">${countryFlag(c.countryInfo?.iso2)}</div>
+              <div class="country-info">
+                <h3>${c.country}</h3>
+                <div class="continent-tag">${c.continent || 'Unknown'}</div>
+              </div>
+              <span class="mortality-badge" title="Case-fatality rate">💀 ${mortality}</span>
+            </div>
+
+            <div class="card-stats">
+              <div class="stat-box cases">
+                <div class="val">${fmt(c.cases)}</div>
+                <div class="lbl">Total Cases</div>
+              </div>
+              <div class="stat-box deaths">
+                <div class="val">${fmt(c.deaths)}</div>
+                <div class="lbl">Deaths</div>
+              </div>
+              <div class="stat-box recovered">
+                <div class="val">${fmt(c.recovered)}</div>
+                <div class="lbl">Recovered</div>
+              </div>
+              <div class="stat-box active">
+                <div class="val">${fmt(c.active)}</div>
+                <div class="lbl">Active</div>
+              </div>
+            </div>
+
+            <!-- Recovery Progress Bar -->
+            <div class="recovery-bar-wrap">
+              <div class="recovery-label">
+                <span>Recovery rate</span>
+                <span>${recovPct}%</span>
+              </div>
+              <div class="recovery-track">
+                <div class="recovery-fill" style="width:${recovPct}%"></div>
+              </div>
+            </div>
+
+            <!-- FEATURE 4: "View More" expandable detail -->
+            <div class="card-detail${isExpanded ? ' open' : ''}" id="detail-${c.country.replace(/\s/g,'_')}">
+              <div class="detail-inner">
+                <div class="detail-row">
+                  <span class="dk">Today's Cases</span>
+                  <span class="dv">+${fmt(c.todayCases)}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="dk">Today's Deaths</span>
+                  <span class="dv">+${fmt(c.todayDeaths)}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="dk">Critical</span>
+                  <span class="dv">${fmt(c.critical)}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="dk">Tests Done</span>
+                  <span class="dv">${fmt(c.tests)}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="dk">Population</span>
+                  <span class="dv">${fmt(c.population)}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="dk">Cases / 1M</span>
+                  <span class="dv">${fmt(Math.round(c.casesPerOneMillion))}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Footer with action buttons -->
+            <div class="card-footer">
+              <span class="updated">Updated ${timeAgo(c.updated)}</span>
+              <div class="card-actions">
+                <!-- FEATURE 4a: Like button -->
+                <button class="icon-btn like-btn${isLiked ? ' liked' : ''}"
+                        data-name="${c.country}"
+                        title="${isLiked ? 'Unlike' : 'Like'}">
+                  ${isLiked ? '👍' : '👍'}
+                </button>
+
+                <!-- FEATURE 4b: Favourite button -->
+                <button class="icon-btn fav-btn"
+                        data-name="${c.country}"
+                        title="${isFav ? 'Remove favourite' : 'Add favourite'}">
+                  ${isFav ? '❤️' : '🤍'}
+                </button>
+
+                <!-- FEATURE 4c: View More button -->
+                <button class="icon-btn expand-btn"
+                        data-name="${c.country}"
+                        title="${isExpanded ? 'Show less' : 'View more'}">
+                  ${isExpanded ? '🔼' : '🔽'}
+                </button>
+              </div>
+            </div>
+
+          </div>`;
+        })
+        .join('');
+
+      // ── LIKE button events ────────────────────────────────
+      grid.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const name = btn.dataset.name;
+          if (likes.includes(name)) {
+            likes = likes.filter(l => l !== name);
+            btn.style.opacity = '0.45';
+            showToast(`Removed like from ${name}`);
+          } else {
+            likes.push(name);
+            btn.classList.add('liked');
+            btn.style.opacity = '1';
+            showToast(`Liked ${name} 👍`);
+          }
+          localStorage.setItem('medexo_likes', JSON.stringify(likes));
+        });
+      });
+
+      // ── FAVOURITE button events ───────────────────────────
       grid.querySelectorAll('.fav-btn').forEach(btn => {
         btn.addEventListener('click', e => {
           e.stopPropagation();
           const name = btn.dataset.name;
+          const card = btn.closest('.card');
           if (favorites.includes(name)) {
             favorites = favorites.filter(f => f !== name);
             btn.textContent = '🤍';
+            card.classList.remove('fav-active');
+            showToast(`Removed ${name} from favourites`);
           } else {
             favorites.push(name);
             btn.textContent = '❤️';
+            card.classList.add('fav-active');
+            showToast(`Added ${name} to favourites ❤️`);
           }
           localStorage.setItem('medexo_favs', JSON.stringify(favorites));
+          if (favsOnly) applyFilters();
+        });
+      });
+
+      // ── VIEW MORE (expand) button events ─────────────────
+      grid.querySelectorAll('.expand-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const name   = btn.dataset.name;
+          const key    = name.replace(/\s/g, '_');
+          const detail = document.getElementById(`detail-${key}`);
+          const open   = detail.classList.toggle('open');
+          expandedCards[open ? 'add' : 'delete'](name);
+          btn.textContent = open ? '🔼' : '🔽';
+          btn.title       = open ? 'Show less' : 'View more';
         });
       });
     }
 
-    // ── FILTER + SORT (Array HOFs) ─────────────────────────
-    function applyFilters() {
-      const query = document.getElementById('searchInput').value.trim().toLowerCase();
-      const sortBy = document.getElementById('sortSelect').value;
-      const continent = document.getElementById('continentSelect').value;
+    // ════════════════════════════════════════════════════════════
+    //  SORT DIRECTION TOGGLE
+    // ════════════════════════════════════════════════════════════
+    document.getElementById('sortDirBtn').addEventListener('click', () => {
+      sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+      document.getElementById('sortDirBtn').textContent = sortDir === 'desc' ? '↓' : '↑';
+      showToast(sortDir === 'asc' ? 'Sorted ascending ↑' : 'Sorted descending ↓');
+      applyFilters();
+    });
 
-      let result = allCountries
-        // 1. Filter by search
-        .filter(c => c.country.toLowerCase().includes(query))
-        // 2. Filter by continent
-        .filter(c => continent === 'all' || c.continent === continent)
-        // 3. Sort
-        .sort((a, b) => {
-          if (sortBy === 'country') return a.country.localeCompare(b.country);
-          return (b[sortBy] ?? 0) - (a[sortBy] ?? 0);
-        });
+    // ════════════════════════════════════════════════════════════
+    //  FAVOURITES-ONLY TOGGLE
+    // ════════════════════════════════════════════════════════════
+    document.getElementById('favsOnlyBtn').addEventListener('click', () => {
+      favsOnly = !favsOnly;
+      document.getElementById('favsOnlyBtn').classList.toggle('active', favsOnly);
+      showToast(favsOnly ? 'Showing favourites only ❤️' : 'Showing all countries');
+      applyFilters();
+    });
 
-      renderCards(result);
-    }
+    // ════════════════════════════════════════════════════════════
+    //  SEARCH CLEAR BUTTON
+    // ════════════════════════════════════════════════════════════
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
 
-    // ── DEBOUNCE (Bonus Feature) ───────────────────────────
+    searchInput.addEventListener('input', () => {
+      searchClear.classList.toggle('visible', searchInput.value.length > 0);
+    });
+
+    searchClear.addEventListener('click', () => {
+      searchInput.value = '';
+      searchClear.classList.remove('visible');
+      searchInput.focus();
+      applyFilters();
+    });
+
+    // ════════════════════════════════════════════════════════════
+    //  DEBOUNCE UTILITY
+    // ════════════════════════════════════════════════════════════
     function debounce(fn, delay) {
       let timer;
-      return (...args) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => fn(...args), delay);
-      };
+      return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
     }
 
-    // ── EVENTS ────────────────────────────────────────────
-    document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
+    // ════════════════════════════════════════════════════════════
+    //  EVENT LISTENERS
+    // ════════════════════════════════════════════════════════════
+    searchInput.addEventListener('input', debounce(applyFilters, 300));
     document.getElementById('sortSelect').addEventListener('change', applyFilters);
     document.getElementById('continentSelect').addEventListener('change', applyFilters);
+    document.getElementById('severitySelect').addEventListener('change', applyFilters);
 
-    // ── INIT ──────────────────────────────────────────────
+    // ════════════════════════════════════════════════════════════
+    //  INIT
+    // ════════════════════════════════════════════════════════════
     fetchGlobalStats();
     fetchCountries();
   </script>
